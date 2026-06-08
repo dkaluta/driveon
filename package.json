@@ -1,0 +1,26 @@
+{
+  "name": "getaway",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "GETAWAY — car-sharing app. Driver + owner flows. Implemented from the Claude Design handoff bundle.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "pages": "node scripts/build-singlefile.mjs",
+    "figma": "node scripts/build-figma.mjs",
+    "figma:parse": "figma connect parse",
+    "figma:publish": "figma connect publish",
+    "figma:unpublish": "figma connect unpublish"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@figma/code-connect": "^1.4.7",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

@@ -1,0 +1,8 @@
+node_modules
+dist
+figma-export
+.DS_Store
+*.local
+design_download
+
+.env

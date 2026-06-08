@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GETAWAY — peer-to-peer car sharing</title>
+<meta name="description" content="GETAWAY — a peer-to-peer car-sharing app with driver and owner flows. Teal design system, liquid-glass navigation, digital keys, and a fully component-driven Figma library." />
+<meta property="og:title" content="GETAWAY — peer-to-peer car sharing" />
+<meta property="og:description" content="Your next adventure is parked nearby. Drive freely. Earn easily." />
+<meta property="og:image" content="./assets/home.png" />
+<meta name="theme-color" content="#16403b" />
+<link rel="icon" href="./assets/icon.png" />
+<style>
+  :root{
+    --primary:hsl(174 72% 56%);
+    --secondary:hsl(171 38% 52%);
+    --accent:hsl(173 22% 45%);
+    --brand:hsl(173 37% 23%);
+    --brand-deep:hsl(174 45% 12%);
+    --ink:hsl(174 30% 14%);
+    --muted:hsl(173 14% 42%);
+    --mint:hsl(173 38% 95%);
+    --mint-2:hsl(173 36% 90%);
+    --hair:hsl(173 16% 88%);
+    --surface:#ffffff;
+    --grad:linear-gradient(135deg,hsl(174 72% 56%),hsl(171 38% 48%));
+    --grad-deep:linear-gradient(165deg,hsl(174 45% 16%),hsl(176 50% 9%));
+    --radius:22px;
+    --shadow:0 30px 70px -28px hsl(174 60% 14% / .45);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font);color:var(--ink);background:var(--surface);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+  .wm{display:block;fill:currentColor;}
+  h1,h2,h3{letter-spacing:-.01em;line-height:1.05;}
+  .eyebrow{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--secondary);}
+
+  /* ---- nav ---- */
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(150%) blur(14px);
+    background:hsl(0 0% 100% / .82);border-bottom:1px solid var(--hair);}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px;}
+  .nav .wm{height:24px;width:auto;color:var(--brand);}
+  .nav-links{display:flex;align-items:center;gap:28px;}
+  .nav-links a{font-weight:600;font-size:15px;color:var(--accent);}
+  .nav-links a:hover{color:var(--brand);}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:15px;
+    padding:12px 22px;border-radius:999px;cursor:pointer;border:none;transition:transform .15s,box-shadow .2s;white-space:nowrap;}
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--grad);color:#06302b;box-shadow:0 10px 26px -8px hsl(174 72% 46% / .6);}
+  .btn-primary:hover{box-shadow:0 16px 34px -8px hsl(174 72% 46% / .7);transform:translateY(-1px);}
+  .btn-ghost{background:hsl(174 40% 96%);color:var(--brand);}
+  .btn-ghost:hover{background:hsl(174 40% 92%);}
+  .btn-light{background:hsl(0 0% 100% / .14);color:#fff;backdrop-filter:blur(6px);border:1px solid hsl(0 0% 100% / .25);}
+  .btn-light:hover{background:hsl(0 0% 100% / .22);}
+  .nav .btn{padding:10px 18px;font-size:14px;}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none;}}
+
+  /* ---- hero ---- */
+  .hero{position:relative;color:#fff;background:var(--grad-deep);overflow:hidden;}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(60% 50% at 78% 12%,hsl(174 72% 56% / .35),transparent 70%),
+    radial-gradient(50% 40% at 8% 90%,hsl(171 60% 50% / .22),transparent 70%);}
+  .hero-in{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;
+    padding:84px 0 96px;}
+  .hero .wm{height:74px;width:auto;color:#fff;margin-bottom:26px;}
+  .hero .tag{font-size:21px;font-weight:600;color:hsl(173 40% 90%);max-width:30ch;}
+  .hero h1{font-size:clamp(34px,5vw,56px);font-weight:900;text-transform:uppercase;margin:18px 0 8px;
+    letter-spacing:-.02em;}
+  .hero h1 em{font-style:normal;background:linear-gradient(120deg,hsl(174 80% 70%),hsl(168 60% 60%));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px;}
+  .hero-phones{position:relative;height:520px;}
+  .hero-phones img{position:absolute;width:230px;border-radius:34px;filter:drop-shadow(0 40px 60px hsl(176 60% 4% / .55));}
+  .hero-phones .p1{left:8%;top:0;transform:rotate(-6deg);z-index:2;}
+  .hero-phones .p2{right:4%;top:54px;transform:rotate(6deg);width:215px;opacity:.96;}
+  @media(max-width:860px){
+    .hero-in{grid-template-columns:1fr;padding:60px 0 40px;}
+    .hero-phones{height:420px;margin-top:10px;}
+  }
+
+  /* ---- stats strip ---- */
+  .stats{background:var(--brand-deep);color:#fff;}
+  .stats-in{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:26px 0;text-align:center;}
+  .stats b{display:block;font-size:30px;font-weight:900;color:var(--primary);letter-spacing:-.02em;}
+  .stats span{font-size:13px;font-weight:600;color:hsl(173 25% 75%);text-transform:uppercase;letter-spacing:.08em;}
+  @media(max-width:620px){.stats-in{grid-template-columns:repeat(2,1fr);gap:22px;}}
+
+  /* ---- sections ---- */
+  section.block{padding:92px 0;}
+  .section-head{max-width:640px;margin-bottom:48px;}
+  .section-head h2{font-size:clamp(28px,3.5vw,40px);font-weight:900;text-transform:uppercase;margin:10px 0;color:var(--brand);}
+  .section-head p{font-size:18px;color:var(--muted);}
+
+  /* features */
+  .features{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .feature{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:30px;
+    transition:transform .2s,box-shadow .2s;}
+  .feature:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .feature .ic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;
+    background:var(--mint);color:var(--brand);margin-bottom:16px;}
+  .feature h3{font-size:20px;font-weight:800;margin-bottom:8px;color:var(--ink);}
+  .feature p{color:var(--muted);font-size:15.5px;}
+  .feature ul{list-style:none;margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;}
+  .feature li{font-size:13px;font-weight:700;background:var(--mint);color:var(--accent);padding:6px 12px;border-radius:999px;}
+  @media(max-width:720px){.features{grid-template-columns:1fr;}}
+
+  /* screens */
+  .screens{background:var(--mint);}
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;}
+  .shot{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .shot img{width:100%;max-width:250px;border-radius:30px;
+    filter:drop-shadow(0 26px 40px hsl(174 50% 18% / .28));transition:transform .25s;}
+  .shot:hover img{transform:translateY(-6px) scale(1.015);}
+  .shot .cap{margin-top:16px;font-weight:800;color:var(--brand);font-size:16px;}
+  .shot .sub{font-size:13.5px;color:var(--muted);}
+  @media(max-width:840px){.gallery{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:520px){.gallery{grid-template-columns:1fr;}}
+
+  /* design system */
+  .ds-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
+  .swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:8px 0 26px;}
+  .sw{height:88px;border-radius:16px;display:flex;align-items:flex-end;padding:10px;font-size:11px;font-weight:800;
+    color:#fff;box-shadow:var(--shadow);}
+  .ds-list{list-style:none;display:flex;flex-direction:column;gap:14px;}
+  .ds-list li{display:flex;gap:12px;align-items:flex-start;font-size:16px;color:var(--ink);}
+  .ds-list .dot{flex:0 0 auto;width:22px;height:22px;border-radius:7px;background:var(--grad);display:grid;place-items:center;margin-top:2px;}
+  .ds-card{background:var(--brand-deep);border-radius:var(--radius);padding:34px;color:#fff;}
+  .ds-card .eyebrow{color:var(--primary);}
+  .ds-card h3{font-size:24px;font-weight:900;text-transform:uppercase;margin:8px 0 14px;}
+  .ds-card p{color:hsl(173 25% 80%);font-size:15.5px;}
+  .type-demo{margin-top:22px;border-top:1px solid hsl(0 0% 100% / .12);padding-top:20px;}
+  .type-demo .big{font-size:30px;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;}
+  .type-demo .small{font-size:14px;color:hsl(173 25% 78%);font-weight:600;}
+  @media(max-width:820px){.ds-grid{grid-template-columns:1fr;}.swatches{grid-template-columns:repeat(5,1fr);}}
+
+  /* video */
+  .video-frame{position:relative;max-width:920px;margin:0 auto;aspect-ratio:16/9;border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow);background:#000;}
+  .video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .video-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    text-align:center;color:#fff;background:var(--grad-deep);}
+  .video-ph::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 50% 35%,hsl(174 72% 56% / .28),transparent 70%);}
+  .video-ph>*{position:relative;}
+  .video-ph .play{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;background:var(--grad);
+    color:#06302b;box-shadow:0 18px 44px -10px hsl(174 72% 46% / .65);transition:transform .2s;}
+  .video-frame:hover .play{transform:scale(1.06);}
+  .video-ph .vt{font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.02em;}
+  .video-ph .vs{font-size:14px;color:hsl(173 30% 80%);font-weight:600;}
+
+  /* team */
+  .team{background:var(--mint);}
+  .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;}
+  .author{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);
+    padding:28px 18px;text-align:center;transition:transform .2s,box-shadow .2s;}
+  .author:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .author .av{width:74px;height:74px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;
+    background:var(--grad);color:#06302b;box-shadow:0 10px 24px -8px hsl(174 72% 46% / .55);}
+  .author h3{font-size:17px;font-weight:800;color:var(--ink);}
+  .author .role{font-size:13px;color:var(--muted);font-weight:600;margin-top:3px;}
+  .author .ph{display:inline-block;margin-top:12px;font-size:10.5px;font-weight:800;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--accent);background:var(--mint-2);padding:4px 11px;border-radius:999px;}
+  @media(max-width:900px){.team-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:560px){.team-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* cta */
+  .cta{position:relative;color:#fff;background:var(--grad-deep);overflow:hidden;text-align:center;}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 50% 0%,hsl(174 72% 56% / .3),transparent 70%);}
+  .cta-in{position:relative;padding:96px 0;}
+  .cta h2{font-size:clamp(30px,4vw,46px);font-weight:900;text-transform:uppercase;margin-bottom:14px;}
+  .cta p{font-size:19px;color:hsl(173 40% 88%);max-width:46ch;margin:0 auto 30px;}
+  .cta .hero-cta{justify-content:center;}
+
+  /* footer */
+  footer{background:var(--brand-deep);color:hsl(173 22% 72%);padding:40px 0;border-top:1px solid hsl(0 0% 100% / .08);}
+  .foot-in{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  footer .wm{height:20px;width:auto;color:#fff;opacity:.92;}
+  .foot-links{display:flex;gap:22px;font-size:14px;}
+  .foot-links a:hover{color:#fff;}
+  footer small{display:block;width:100%;font-size:12.5px;color:hsl(173 18% 55%);margin-top:18px;}
+</style>
+</head>
+<body>
+
+<!-- inline wordmark symbol (EXACT GETAWAY lockup) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wm" viewBox="0 0 796 107"><path d="M205.601 81.136L220.289 11.824H286.721L283.649 26.416H245.441L242.753 39.184H278.561L275.489 53.776H239.681L236.897 66.544H275.489L272.417 81.136H205.601Z"/><path d="M302.258 81.136L313.394 28.72H290.642L294.194 11.824H368.882L365.33 28.72H342.578L331.442 81.136H302.258Z"/><path d="M394.244 54.448H416.228L410.66 30.256L394.244 54.448ZM347.588 81.136L397.604 11.824H433.988L454.628 81.136H422.468L419.876 69.616H384.068L376.196 81.136H347.588Z"/><path d="M466.074 81.136L464.538 11.824H492.762L492.858 55.12H493.146L515.226 11.824H547.77L551.418 55.12H551.706L569.946 11.824H596.154L565.05 81.136H528.282L524.826 38.992H524.538L503.13 81.136H466.074Z"/><path d="M625.057 54.448H647.041L641.473 30.256L625.057 54.448ZM578.401 81.136L628.417 11.824H664.801L685.441 81.136H653.281L650.689 69.616H614.881L607.009 81.136H578.401Z"/><path d="M707.479 81.136L711.895 60.4L688.183 11.824H724.567L732.919 40.432L754.231 11.824H785.335L741.079 60.4L736.663 81.136H707.479Z"/><path d="M117.714 77.1357C121.58 77.1359 124.714 80.2699 124.714 84.1357C124.714 88.0017 121.58 91.1356 117.714 91.1357C113.848 91.1357 110.714 88.0017 110.714 84.1357C110.714 80.2699 113.848 77.1357 117.714 77.1357Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M117.714 72.1357C124.341 72.1359 129.714 77.5085 129.714 84.1357C129.714 90.7631 124.341 96.1356 117.714 96.1357C111.086 96.1357 105.714 90.7632 105.714 84.1357C105.714 77.5084 111.087 72.1357 117.714 72.1357ZM117.714 75.1357C112.743 75.1357 108.714 79.1653 108.714 84.1357C108.714 89.1063 112.743 93.1357 117.714 93.1357C122.684 93.1356 126.714 89.1062 126.714 84.1357C126.714 79.1654 122.684 75.1359 117.714 75.1357Z"/><path d="M169.714 77.1357C173.58 77.1359 176.714 80.2699 176.714 84.1357C176.714 88.0017 173.58 91.1356 169.714 91.1357C165.848 91.1357 162.714 88.0017 162.714 84.1357C162.714 80.2699 165.848 77.1357 169.714 77.1357Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M169.714 72.1357C176.341 72.1359 181.714 77.5085 181.714 84.1357C181.714 90.7631 176.341 96.1356 169.714 96.1357C163.086 96.1357 157.714 90.7632 157.714 84.1357C157.714 77.5084 163.087 72.1357 169.714 72.1357ZM169.714 75.1357C164.743 75.1357 160.714 79.1653 160.714 84.1357C160.714 89.1063 164.743 93.1357 169.714 93.1357C174.684 93.1356 178.714 89.1062 178.714 84.1357C178.714 79.1654 174.684 75.1359 169.714 75.1357Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M161.354 10C186.505 10 203.306 15.4724 200.138 32.9443H169.706C169.706 31.1204 168.938 29.008 167.21 27.376C165.482 25.744 162.505 24.5918 157.897 24.5918C145.418 24.5919 136.778 32.944 134.09 45.4238C131.306 58.7678 135.338 68.3682 149.834 68.3682C156.17 68.3681 160.969 67.4077 163.945 65.9678L166.153 55.4082H149.258L152.33 40.8164H198.41L190.634 77.3916C188.118 77.9489 185.47 78.4806 182.733 78.9814C180.681 73.8005 175.625 70.1358 169.714 70.1357C162.556 70.1357 156.652 75.5081 155.815 82.4404C151.245 82.7741 146.766 82.9599 142.538 82.96C138.541 82.96 134.904 82.7572 131.604 82.373C130.737 75.4734 124.849 70.1359 117.714 70.1357C114.465 70.1357 111.473 71.2423 109.098 73.0996C103.178 66.7347 102.33 57.7189 104.521 47.3438C109.994 21.328 130.826 10.0001 161.354 10ZM154.714 49.1357H165.846L166.714 45.1357H155.582L154.714 49.1357ZM146.124 15.1436C135.078 17.152 126.983 20.4268 121.078 25.4424C115.166 30.4645 111.497 37.1916 109.229 46.0107L110.198 46.2607C112.43 37.5805 116.012 31.0568 121.725 26.2041C127.445 21.3451 135.351 18.1194 146.304 16.1279L146.124 15.1436Z"/><path d="M96.418 68C97.2461 68.0002 97.9178 68.6718 97.918 69.5C97.918 70.3283 97.2462 70.9998 96.418 71H11.5C10.6716 71 10 70.3284 10 69.5C10.0001 68.6717 10.6717 68 11.5 68H96.418Z"/><path d="M89 47.5C89.8283 47.5 90.4999 48.1717 90.5 49C90.5 49.8284 89.8284 50.5 89 50.5H26.5C25.6716 50.5 25 49.8284 25 49C25.0001 48.1717 25.6717 47.5 26.5 47.5H89Z"/><path d="M96.418 28C97.2461 28.0002 97.9178 28.6718 97.918 29.5C97.918 30.3283 97.2462 30.9998 96.418 31H41C40.1716 31 39.5 30.3284 39.5 29.5C39.5001 28.6717 40.1717 28 41 28H96.418Z"/></symbol></svg>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="#top" aria-label="GETAWAY"><svg class="wm" style="height:24px"><use href="#wm"/></svg></a>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#screens">Screens</a>
+      <a href="#video">Video</a>
+      <a href="#design">Design system</a>
+      <a href="#team">Team</a>
+      <a class="btn btn-primary" href="./app.html">Launch prototype</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap hero-in">
+    <div>
+      <svg class="wm" style="height:74px"><use href="#wm"/></svg>
+      <p class="tag">Your next adventure is parked nearby.</p>
+      <h1>Rent it. Drive it.<br><em>Or earn from it.</em></h1>
+      <p class="tag" style="font-size:17px;margin-top:6px">A peer-to-peer car-sharing app with full driver &amp; owner flows — book a car, unlock it with a digital key, or list your own and watch the earnings roll in.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="./app.html">▶&nbsp; Launch the prototype</a>
+        <a class="btn btn-light" href="#screens">Browse the screens</a>
+      </div>
+    </div>
+    <div class="hero-phones">
+      <img class="p1" src="./assets/home.png" alt="GETAWAY driver home screen" />
+      <img class="p2" src="./assets/digital-key.png" alt="GETAWAY digital key screen" />
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="wrap stats-in">
+    <div><b>48</b><span>Screens</span></div>
+    <div><b>26</b><span>Components</span></div>
+    <div><b>2</b><span>User flows</span></div>
+    <div><b>Light + Dark</b><span>4 accent themes</span></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="block" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What's inside</div>
+      <h2>Two sides of the same key</h2>
+      <p>GETAWAY pairs drivers looking for a ride with owners renting out their cars — each with a flow built end-to-end.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L21 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg></div>
+        <h3>Driver flow</h3>
+        <p>Browse and map nearby cars, filter, book a slot, pay on a ticket-stub checkout, then unlock with an NFC digital key — with mandatory fuel-check verification at pickup and drop-off.</p>
+        <ul><li>Search &amp; map</li><li>Booking</li><li>Digital key</li><li>Fuel verification</li><li>Transit navigation</li></ul>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.4 11 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></div>
+        <h3>Owner flow</h3>
+        <p>An earnings dashboard with animated revenue, approve / deny requests, a redesigned week-view schedule, rental history, a garage of your cars, and a list-a-car wizard.</p>
+        <ul><li>Earnings</li><li>Approve / deny</li><li>Week schedule</li><li>Garage</li><li>Listings</li></ul>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2a10 10 0 1 0 0 20 1.5 1.5 0 0 0 1.06-2.56A1.5 1.5 0 0 1 14 17.5h2a4 4 0 0 0 4-4 10 10 0 0 0-8-11.5"/></svg></div>
+        <h3>Design system</h3>
+        <p>An exact turquoise → deep-teal token palette, system-font uppercase display type, Lucide iconography, and a 26-component Figma library — light/dark with four accent themes.</p>
+        <ul><li>HSL tokens</li><li>Lucide icons</li><li>Light / Dark</li><li>Component library</li></ul>
+      </div>
+      <div class="feature">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
+        <h3>Figma-ready</h3>
+        <p>Every screen server-renders to JS-free HTML for clean <code>html.to.design</code> import as Auto-Layout frames, with Code Connect mappings linking each component to its React source.</p>
+        <ul><li>48 frames</li><li>Auto Layout</li><li>Code Connect</li><li>Clickable prototype</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENS -->
+<section class="block screens" id="screens">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The product</div>
+      <h2>Every screen, polished</h2>
+      <p>From the first tap to the last drop-off — here's a look at the flow.</p>
+    </div>
+    <div class="gallery">
+      <div class="shot"><img src="./assets/splash.png" alt="Splash"><div class="cap">Splash</div><div class="sub">Pick your side — drive or earn</div></div>
+      <div class="shot"><img src="./assets/home.png" alt="Driver home"><div class="cap">Driver home</div><div class="sub">Upcoming rentals &amp; quick search</div></div>
+      <div class="shot"><img src="./assets/car-detail.png" alt="Car detail"><div class="cap">Car detail</div><div class="sub">Specs, policy &amp; instant booking</div></div>
+      <div class="shot"><img src="./assets/fuel-check.png" alt="Fuel verification"><div class="cap">Fuel check</div><div class="sub">Photo-verified full tank before unlock</div></div>
+      <div class="shot"><img src="./assets/digital-key.png" alt="Digital key"><div class="cap">Digital key</div><div class="sub">Tap-to-unlock NFC key</div></div>
+      <div class="shot"><img src="./assets/schedule.png" alt="Owner schedule"><div class="cap">Owner schedule</div><div class="sub">Week-view bookings at a glance</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section class="block" id="video">
+  <div class="wrap">
+    <div class="section-head" style="max-width:640px;margin-left:auto;margin-right:auto;text-align:center">
+      <div class="eyebrow">Watch</div>
+      <h2>See it in motion</h2>
+      <p>A full walkthrough of both flows — demo video coming soon.</p>
+    </div>
+    <div class="video-frame">
+      <!-- To embed the real walkthrough, replace the .video-ph block below with:
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" title="GETAWAY walkthrough"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      -->
+      <div class="video-ph">
+        <div class="play"><svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86A1 1 0 0 0 8 5.14z"/></svg></div>
+        <div class="vt">Walkthrough video</div>
+        <div class="vs">YouTube embed — coming soon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN SYSTEM -->
+<section class="block" id="design">
+  <div class="wrap ds-grid">
+    <div>
+      <div class="eyebrow">Built on tokens</div>
+      <h2 style="font-size:clamp(28px,3.5vw,40px);font-weight:900;text-transform:uppercase;margin:10px 0 6px;color:var(--brand)">A system, not a mockup</h2>
+      <div class="swatches">
+        <div class="sw" style="background:hsl(174 72% 56%)">Primary</div>
+        <div class="sw" style="background:hsl(171 38% 52%)">Secondary</div>
+        <div class="sw" style="background:hsl(173 22% 45%)">Accent</div>
+        <div class="sw" style="background:hsl(173 37% 23%)">Brand</div>
+        <div class="sw" style="background:hsl(173 38% 92%);color:hsl(173 37% 23%)">Mint</div>
+      </div>
+      <ul class="ds-list">
+        <li><span class="dot"></span><div><b>HSL custom properties</b> drive every color, so dark mode and 4 accent themes are a token swap away.</div></li>
+        <li><span class="dot"></span><div><b>26 reusable components</b> — atoms, inputs, rows, navigation chrome and domain widgets — all variant-driven.</div></li>
+        <li><span class="dot"></span><div><b>Exact Lucide geometry</b> and an inlined GETAWAY wordmark + G-scooter mark.</div></li>
+      </ul>
+    </div>
+    <div class="ds-card">
+      <div class="eyebrow">Type</div>
+      <h3>Uppercase. Bold. Tight.</h3>
+      <p>System font stack with confident, tracked display headings and clean body copy.</p>
+      <div class="type-demo">
+        <div class="big">Drive freely</div>
+        <div class="big" style="color:var(--primary)">Earn easily</div>
+        <div class="small" style="margin-top:10px">Your next adventure is parked nearby — book it, unlock it, go.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="block team" id="team">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The crew</div>
+      <h2>Made by</h2>
+      <p>Five hands on the wheel — author details are placeholders for now.</p>
+    </div>
+    <div class="team-grid">
+      <div class="author">
+        <div class="av"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Author One</h3><div class="role">Role placeholder</div><div class="ph">TBD</div>
+      </div>
+      <div class="author">
+        <div class="av"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Author Two</h3><div class="role">Role placeholder</div><div class="ph">TBD</div>
+      </div>
+      <div class="author">
+        <div class="av"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Author Three</h3><div class="role">Role placeholder</div><div class="ph">TBD</div>
+      </div>
+      <div class="author">
+        <div class="av"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Author Four</h3><div class="role">Role placeholder</div><div class="ph">TBD</div>
+      </div>
+      <div class="author">
+        <div class="av"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Author Five</h3><div class="role">Role placeholder</div><div class="ph">TBD</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap cta-in">
+    <h2>Take it for a spin</h2>
+    <p>The full prototype runs right in your browser — both flows, every screen, fully tappable. Or page through all 48 screens as one static, no-JS document.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="./app.html">▶&nbsp; Launch the prototype</a>
+      <a class="btn btn-light" href="./screens.html">All 48 screens (static)</a>
+      <a class="btn btn-light" href="https://www.figma.com/design/hCgqlk4CL9NDwY2LSiBjvs/" target="_blank" rel="noopener">Open in Figma</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <svg class="wm" style="height:20px"><use href="#wm"/></svg>
+      <div class="foot-links">
+        <a href="./app.html">Prototype</a>
+        <a href="./screens.html">All screens</a>
+        <a href="https://www.figma.com/design/hCgqlk4CL9NDwY2LSiBjvs/" target="_blank" rel="noopener">Figma</a>
+        <a href="https://github.com/dkaluta/getaway" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <small>GETAWAY — peer-to-peer car-sharing concept by Author One, Two, Three, Four &amp; Five <em>(placeholders)</em>. Built with Vite + React, exported to a component-driven Figma library. Drive freely. Earn easily.</small>
+  </div>
+</footer>
+
+</body>
+</html>
