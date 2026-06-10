@@ -1,4 +1,4 @@
-/* GETAWAY — sign-up / onboarding flows (driver + owner).
+/* DriveOn — sign-up / onboarding flows (driver + owner).
    Built from the Figma onboarding frames. Multi-step wizard, data-driven. */
 import React from 'react';
 import { Icon, Header, Wordmark } from './ui.jsx';

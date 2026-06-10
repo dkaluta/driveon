@@ -1,4 +1,4 @@
-/* GETAWAY — static harness for the Figma import.
+/* DriveOn — static harness for the Figma import.
  *
  * Renders every screen as a FULL-BLEED, RESPONSIVE, semantic frame — no phone
  * bezel, no fixed device size, no clipping. Each screen is a flex COLUMN in

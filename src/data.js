@@ -1,4 +1,4 @@
-/* GETAWAY data — derived from the Figma flows.
+/* DriveOn data — derived from the Figma flows.
    Images live in /public/img and are served by Vite at /img/<file>. The same
    paths are rewritten to inline base64 data-URIs by scripts/build-figma.mjs so
    the Figma export is fully self-contained. */

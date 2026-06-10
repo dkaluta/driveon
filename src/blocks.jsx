@@ -1,4 +1,4 @@
-/* GETAWAY — genericised building blocks shared by BOTH driver & owner flows.
+/* DriveOn — genericised building blocks shared by BOTH driver & owner flows.
    One row, one header, one tile grid, one settings row — reused everywhere. */
 import React from 'react';
 import { Icon } from './icons.jsx';

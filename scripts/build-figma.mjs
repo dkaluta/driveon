@@ -1,7 +1,7 @@
 /* Build the Figma-import-ready static export.
  *
  * Why this exists: html.to.design (and any "URL import") needs *rendered, static
- * DOM*. The GETAWAY app is a client-rendered React SPA + router, so a naive
+ * DOM*. The DriveOn app is a client-rendered React SPA + router, so a naive
  * import sees an empty <div id="root"> (or only one screen). This script
  * server-renders EVERY screen to plain HTML — no React, no scripts.
  *
@@ -136,29 +136,29 @@ async function main(){
   screens.forEach((s, i) => {
     const file = `${String(i+1).padStart(2,'0')}-${slug(s.name)}.html`;
     writeFileSync(join(outDir, 'screens', file),
-      page({ title:`GETAWAY — ${s.name}`, css, body: embed(s.html) }));
+      page({ title:`DriveOn — ${s.name}`, css, body: embed(s.html) }));
     links.push({ file, name:s.name });
   });
 
   // 4. Combined file — every frame stacked for a single capture.
   writeFileSync(join(outDir, 'getaway-figma.html'),
-    page({ title:'GETAWAY — all screens (Figma import)', css, body: embed(gallery) }));
+    page({ title:'DriveOn — all screens (Figma import)', css, body: embed(gallery) }));
 
   // 4b. New-screens-only file — just the Frame-1 additions/redesigns.
   writeFileSync(join(outDir, 'getaway-new.html'),
-    page({ title:'GETAWAY — new screens only (Figma import)', css, body: embed(galleryNew) }));
+    page({ title:'DriveOn — new screens only (Figma import)', css, body: embed(galleryNew) }));
 
   // 5. Index with instructions + links.
   const list = links.map(l => `<li><a href="screens/${l.file}">${isNew(l.name)?'🆕 ':''}${l.name}</a></li>`).join('\n      ');
   const newList = links.filter(l=>isNew(l.name))
     .map(l => `<li><a href="screens/${l.file}">${l.name}</a></li>`).join('\n      ');
   writeFileSync(join(outDir, 'index.html'), `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><title>GETAWAY — Figma export</title>
+<html lang="en"><head><meta charset="UTF-8"><title>DriveOn — Figma export</title>
 <style>body{font:15px/1.6 system-ui,sans-serif;max-width:680px;margin:40px auto;padding:0 20px;color:#1a2b29}
 h1{font-size:24px}code{background:#eef3f2;padding:1px 6px;border-radius:5px}
 a{color:#2a8f82}ol{padding-left:20px}ul{columns:2;gap:24px}li{margin:2px 0}</style></head>
 <body>
-  <h1>GETAWAY — Figma import</h1>
+  <h1>DriveOn — Figma import</h1>
   <p>Every screen is pre-rendered as JS-free HTML sized to <b>iPhone 16 Pro Max
      (440 × 956 pt)</b>, built from flexbox flow, so <b>html.to.design</b> rebuilds it as
      semantic <b>Auto Layout</b> frames that match the device and resize responsively.</p>

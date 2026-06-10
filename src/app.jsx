@@ -1,4 +1,4 @@
-/* GETAWAY — app shell: router + state + splash + tweaks. */
+/* DriveOn — app shell: router + state + splash + tweaks. */
 import React from 'react';
 import { Icon, StatusBar, BottomTab, Wordmark } from './ui.jsx';
 import { DATA as D } from './data.js';

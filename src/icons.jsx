@@ -1,4 +1,4 @@
-/* GETAWAY icon set — EXACT lucide icons (lucide.dev), per Figma spec
+/* DriveOn icon set — EXACT lucide icons (lucide.dev), per Figma spec
    ("Use lucide-react icons exclusively"). Each entry is the icon's exact
    inner SVG markup (24×24, stroke 2, round caps/joins). Rendered via
    dangerouslySetInnerHTML so geometry matches Lucide 1:1. */

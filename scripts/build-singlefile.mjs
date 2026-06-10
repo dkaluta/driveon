@@ -1,4 +1,4 @@
-/* Build the interactive GETAWAY prototype as ONE self-contained HTML file.
+/* Build the interactive DriveOn prototype as ONE self-contained HTML file.
  *
  * Vite normally emits index.html + assets/*.js + assets/*.css + img/*. That's
  * multi-file and its runtime /img/ paths break on a GitHub Pages subpath. This
@@ -42,7 +42,8 @@ const out = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>GETAWAY — interactive prototype</title>
+<title>DriveOn — interactive prototype</title>
+${map['favicon.png'] ? `<link rel="icon" type="image/png" href="${map['favicon.png']}" />` : ''}
 <style>${css}</style>
 </head>
 <body>

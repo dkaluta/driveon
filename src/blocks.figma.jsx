@@ -1,4 +1,4 @@
-/* Figma Code Connect — GETAWAY shared blocks (src/blocks.jsx).
+/* Figma Code Connect — DriveOn shared blocks (src/blocks.jsx).
    Replace REPLACE_FILE_KEY + node-id placeholders with your Figma links.
    See src/ui.figma.jsx for the full how-to. */
 import figma from '@figma/code-connect';

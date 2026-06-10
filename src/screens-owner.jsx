@@ -1,4 +1,4 @@
-/* GETAWAY — car-owner flow screens.
+/* DriveOn — car-owner flow screens.
    Reuses the SAME generic Blocks (EntityRow, ProfileHeader, StatTiles, etc.) as the driver flow. */
 import React from 'react';
 import { Icon, Chips, CarPhoto, Badge, Header } from './ui.jsx';

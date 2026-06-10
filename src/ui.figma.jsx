@@ -1,4 +1,4 @@
-/* Figma Code Connect — GETAWAY UI kit (src/ui.jsx).
+/* Figma Code Connect — DriveOn UI kit (src/ui.jsx).
  *
  * Each figma.connect() links a Figma component to its React source so Figma
  * Dev Mode shows real code. The URLs are PLACEHOLDERS — replace REPLACE_FILE_KEY
