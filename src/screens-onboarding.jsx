@@ -26,7 +26,7 @@ const DRIVER = {
       {f:[{k:'card',label:'Card number',icon:'card'}]},
       {f:[{k:'exp',label:'Expiry'},{k:'cvc',label:'CVC'}]}]},
   ],
-  processing:'Your registration is being processed. An insurance agent will call you within 24–48 hours to complete your verification.',
+  processing:'Your registration is being processed. An insurance agent will call you within 24--48 hours to complete your verification.',
   success:{title:'You’re verified!',sub:'Your account is ready — time to hit the road',cta:'Start driving'},
 };
 

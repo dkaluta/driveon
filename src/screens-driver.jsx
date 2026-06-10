@@ -8,7 +8,7 @@ const h = React.createElement;
 
 /* shared car list row */
 function CarRow({car, onClick, liked, onLike, trailing, showPhoto=true, delay=0}){
-  return h('div',{className:'car-row reveal',style:{animationDelay:delay+'ms'},onClick},
+  return h('div',{className:'car-row reveal card-row',style:{animationDelay:delay+'ms'},onClick},
     showPhoto && h(CarPhoto,{src:car.img,alt:car.name,w:74,h:56}),
     h('div',{className:'meta'},
       h('div',{className:'car-name'},car.name),
@@ -42,7 +42,12 @@ function Home({go, state}){
         onClick:active?()=>go('fuel-pickup',{id:c.id,phase:'pickup'}):undefined,
         sub:[h(DateLine,{key:'d',date:b.date,time:b.time})],
         trailing:[h('div',{key:'p',className:'price'},'$'+b.total),
-          active?h('span',{key:'k',className:'badge ok',style:{display:'inline-flex',alignItems:'center',gap:4}},h(Icon,{name:'key',size:12}),'Key'):h(Badge,{status:b.status})]});})),
+          active
+            ? h('div',{key:'a',className:'row',style:{gap:6}},
+                h('button',{className:'iconbtn',style:{width:36,height:36,background:'var(--grad-primary)',color:'#06302b'},
+                  onClick:e=>{e.stopPropagation();go('navigate',{id:c.id});},'aria-label':'navigate to car'},h(Icon,{name:'navigation',size:18})),
+                h('span',{className:'badge ok',style:{display:'inline-flex',alignItems:'center',gap:4}},h(Icon,{name:'key',size:12}),'Key'))
+            : h(Badge,{status:b.status})]});})),
 
     h(SectionCard,{title:'Rate Your Rides'},
       rate.map((b,i)=>{const c=D.byId[b.car];const val=state.ratings[c.id]||b.stars;
@@ -100,7 +105,7 @@ function Filter({go, back, state}){
   const opt=(group,val,label)=>h('div',{className:'optrow',key:val,onClick:()=>set(group,val)},
     h('span',{className:'cbox'+((f[group]||[]).includes(val)?' on':'')},h(Icon,{name:'check',size:18,stroke:3})),label);
   const sect=(t,kids)=>h('div',null,h('div',{className:'h-section',style:{marginBottom:4}},t),kids);
-  return h('div',{className:'screen-pad'},
+  return h('div',{className:'screen-pad has-pinned'},
     h(Header,{title:'Filter',onBack:back}),
     sect('Gear system',[opt('gear','auto','Auto'),opt('gear','manual','Manual')]),
     h('hr',{className:'hr'}),
@@ -110,7 +115,8 @@ function Filter({go, back, state}){
       h(PriceRange,{value:f.price,onChange:v=>set('price',v)})),
     h('hr',{className:'hr'}),
     sect('Number of seats',[opt('seats','5','5'),opt('seats','58','5 – 8'),opt('seats','8','8 +')]),
-    h('button',{className:'btn btn-primary btn-block',style:{marginTop:8},onClick:back},'Show results')
+    h('div',{className:'pinned-actions'},
+      h('button',{className:'btn btn-primary btn-block',onClick:back},'Show results'))
   );
 }
 function PriceRange({value=46,onChange}){
@@ -165,7 +171,7 @@ function CarDetail({go, state, params}){
   const liked = state.likes.has(car.id);
   // a car is "reserved" once the driver has an active booking for it.
   const reserved = !!(state.booking && state.booking.carId===car.id);
-  return h('div',{className:'screen-pad',style:{paddingTop:2,gap:16}},
+  return h('div',{className:'screen-pad has-pinned',style:{paddingTop:2,gap:16}},
     h('div',{style:{position:'relative'}},
       h('div',{className:'hero-img',style:{aspectRatio:'16/11'}},
         h('img',{src:car.img,alt:car.name}),h('div',{className:'scrim'}),
@@ -197,9 +203,10 @@ function CarDetail({go, state, params}){
             h('div',{className:'row between'},h('span',{className:'eyebrow'},'Your listing'),h(Badge,{status:oc.status})),
             h('div',{className:'kv'},h('span',{className:'k'},'Licence plate'),h('span',{className:'v'},oc.plate)),
             h('div',{className:'kv'},h('span',{className:'k'},'Total earned'),h('span',{className:'v',style:{color:'var(--c-secondary)'}},'$'+oc.earned))),
-          h('div',{className:'row',style:{gap:10}},
-            h('button',{className:'btn btn-ghost grow',onClick:()=>go('owner-add-car')},h(Icon,{name:'pencil',size:19}),'Edit'),
-            h('button',{className:'btn btn-primary grow',onClick:()=>go('owner-calendar')},h(Icon,{name:'calendar',size:19}),'Bookings')))
+          h('div',{className:'pinned-actions'},
+            h('div',{className:'row',style:{gap:10}},
+              h('button',{className:'btn btn-ghost grow',onClick:()=>go('owner-add-car',{edit:car.id})},h(Icon,{name:'pencil',size:19}),'Edit'),
+              h('button',{className:'btn btn-primary grow',onClick:()=>go('owner-calendar')},h(Icon,{name:'calendar',size:19}),'Bookings'))))
       // ---- DRIVER VIEW: owner contact + book ----
       : h(React.Fragment,null,
           h('div',{className:'row',style:{gap:14}},
@@ -211,7 +218,7 @@ function CarDetail({go, state, params}){
               h(Icon,{name:'shield',size:15}),'Verified')),
           reserved
             // ---- RESERVED: navigate (Google Maps transit) + open key ----
-            ? h(React.Fragment,null,
+            ? h('div',{className:'pinned-actions'},
                 h('button',{className:'btn btn-primary btn-block',onClick:()=>navigateToVehicle(car)},
                   h(Icon,{name:'navigation',size:20}),'Navigate to Vehicle'),
                 h('div',{className:'row',style:{gap:10}},
@@ -219,9 +226,10 @@ function CarDetail({go, state, params}){
                   h('button',{className:'btn btn-ghost grow',onClick:()=>go('fuel-pickup',{id:car.id,phase:'pickup'})},
                     h(Icon,{name:'key',size:19}),'Open digital key')))
             // ---- NOT RESERVED: book ----
-            : h('div',{className:'row',style:{gap:10}},
-                h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'}},h(Icon,{name:'phone',size:20})),
-                h('button',{className:'btn btn-primary grow',onClick:()=>{state.startBooking(car.id);go('book-dates',{id:car.id});}},'Book this car')))
+            : h('div',{className:'pinned-actions'},
+                h('div',{className:'row',style:{gap:10}},
+                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'}},h(Icon,{name:'phone',size:20})),
+                  h('button',{className:'btn btn-primary grow',onClick:()=>{state.startBooking(car.id);go('book-dates',{id:car.id});}},'Book this car'))))
   );
 }
 
@@ -311,13 +319,14 @@ function Confirmed({go, params}){
 /* ---------------- FUEL VERIFICATION (pickup + return) ---------------- */
 /* Dashboard-style fuel gauge, needle at Full. */
 function FuelGauge(){
-  return h('svg',{viewBox:'0 0 200 124',width:'100%',style:{maxWidth:230,display:'block',margin:'0 auto'}},
-    h('path',{d:'M22 104 A82 82 0 0 1 178 104',fill:'none',stroke:'var(--hair)',strokeWidth:14,strokeLinecap:'round'}),
-    h('path',{d:'M120 31 A82 82 0 0 1 178 104',fill:'none',stroke:'var(--c-secondary)',strokeWidth:14,strokeLinecap:'round'}),
-    h('line',{x1:100,y1:104,x2:166,y2:55,stroke:'var(--ink)',strokeWidth:5,strokeLinecap:'round'}),
-    h('circle',{cx:100,cy:104,r:8,fill:'var(--ink)'}),
-    h('text',{x:20,y:120,fontSize:15,fontWeight:'800',fill:'var(--muted)'},'E'),
-    h('text',{x:168,y:120,fontSize:15,fontWeight:'800',fill:'var(--c-secondary)'},'F'));
+  // true semicircle: center (100,100), radius 80, endpoints level at y=100
+  return h('svg',{viewBox:'0 0 200 120',width:'100%',style:{maxWidth:230,display:'block',margin:'0 auto'}},
+    h('path',{d:'M20 100 A80 80 0 0 1 180 100',fill:'none',stroke:'var(--hair)',strokeWidth:14,strokeLinecap:'round'}),
+    h('path',{d:'M100 20 A80 80 0 0 1 180 100',fill:'none',stroke:'var(--c-secondary)',strokeWidth:14,strokeLinecap:'round'}),
+    h('line',{x1:100,y1:100,x2:153,y2:57,stroke:'var(--ink)',strokeWidth:5,strokeLinecap:'round'}),
+    h('circle',{cx:100,cy:100,r:8,fill:'var(--ink)'}),
+    h('text',{x:14,y:116,fontSize:14,fontWeight:'800',fill:'var(--muted)'},'E'),
+    h('text',{x:174,y:116,fontSize:14,fontWeight:'800',fill:'var(--c-secondary)'},'F'));
 }
 
 function FuelVerify({go, state, params}){
@@ -378,6 +387,32 @@ function TripDone({go}){
       h('button',{className:'btn btn-ghost btn-block',onClick:()=>go('history')},'View trip history')));
 }
 
+/* ---------------- NAVIGATE TO CAR ---------------- */
+function NavScreen({go, state, params}){
+  const car = (params && params.id && D.byId[params.id]) || D.cars[0];
+  return h('div',{className:'screen-pad',style:{gap:16}},
+    h(Header,{title:'Navigate to car',onBack:()=>go(null,null,true)}),
+    h('div',{style:{position:'relative',borderRadius:'var(--r-card)',overflow:'hidden',aspectRatio:'1 / 1',border:'1px solid var(--hair)'}},
+      h('img',{src:D.A('map.jpg'),alt:'map',style:{width:'100%',height:'100%',objectFit:'cover'}}),
+      // general-area circle (exact pin hidden until 30 min before)
+      h('div',{style:{position:'absolute',left:'46%',top:'44%',width:150,height:150,transform:'translate(-50%,-50%)',
+        borderRadius:'50%',background:'hsl(var(--primary)/.22)',border:'2px solid hsl(var(--primary)/.75)',backdropFilter:'blur(1px)'}}),
+      h('div',{className:'me-dot',style:{left:'40%',top:'72%'}})),
+    h('div',{className:'card',style:{display:'flex',gap:13,alignItems:'center'}},
+      h(CarPhoto,{src:car.img,alt:car.name,w:54,h:42,r:12}),
+      h('div',{className:'grow'},h('div',{style:{fontWeight:800,fontSize:17}},car.name),
+        h('div',{className:'loc',style:{fontSize:14,marginTop:2}},h(Icon,{name:'location',size:18}),car.loc))),
+    h('div',{className:'pol-row key',style:{margin:0}},
+      h('span',{className:'pol-ic'},h(Icon,{name:'clock',size:20})),
+      h('div',{className:'grow'},
+        h('div',{className:'pol-lab'},'General area only'),
+        h('div',{className:'pol-val'},'The car’s exact location unlocks 30 minutes before your rental starts.'))),
+    h('div',{className:'mt-auto'}),
+    h('button',{className:'btn btn-primary btn-block',onClick:()=>navigateToVehicle(car)},
+      h(Icon,{name:'navigation',size:20}),'Open in Google Maps')
+  );
+}
+
 /* ---------------- DIGITAL KEY (NFC unlock) ---------------- */
 function DigitalKey({go, state, params}){
   const car = params && params.id ? D.byId[params.id] : null;
@@ -402,8 +437,8 @@ function DigitalKey({go, state, params}){
           h('div',{style:{display:'flex',flexDirection:'column',alignItems:'center'}},
             h(Icon,{name:unlocked?'unlock':'lock',size:72,stroke:2}),
             waves))),
-      h('div',{className:'key-title'}, unlocked?'Car Unlocked':'Tap to Unlock'),
-      h('div',{className:'key-sub'}, unlocked?'You’re all set — enjoy the ride':'Hold phone near the door handle')),
+      h('div',{className:'key-title'}, unlocked?'Tap to Lock Car':'Tap to Unlock'),
+      h('div',{className:'key-sub'}, unlocked?'Car is open — tap to lock it again':'Hold phone near the door handle')),
     unlocked && h('button',{className:'btn btn-primary btn-block',style:{marginTop:'auto'},
       onClick:()=>go('fuel-return',{id:params&&params.id,phase:'return'})},
       h(Icon,{name:'check',size:20}),'End trip')
@@ -462,9 +497,9 @@ function Settings({go, state, t, setTweak}){
   return h('div',{className:'screen-pad',style:{gap:14}},
     h(Header,{title:'Settings',onBack:()=>go(null,null,true)}),
     h('div',{className:'eyebrow'},'Account'),
-    h(SettingRow,{icon:'user',label:'Edit profile',right:h(Icon,{name:'chevron-right',size:20,color:'var(--c-accent)'})}),
-    h(SettingRow,{icon:'card',label:'Payment methods',right:h(Icon,{name:'chevron-right',size:20,color:'var(--c-accent)'})}),
-    h(SettingRow,{icon:'shield',label:'Verification',right:h('span',{className:'badge ok'},'Verified')}),
+    h(SettingRow,{icon:'user',label:'Edit profile',onClick:()=>go('setting-detail',{key:'profile'}),right:h(Icon,{name:'chevron-right',size:20,color:'var(--c-accent)'})}),
+    h(SettingRow,{icon:'card',label:'Payment methods',onClick:()=>go('setting-detail',{key:'payment'}),right:h(Icon,{name:'chevron-right',size:20,color:'var(--c-accent)'})}),
+    h(SettingRow,{icon:'shield',label:'Verification',onClick:()=>go('setting-detail',{key:'verification'}),right:h('span',{className:'badge ok'},'Verified')}),
     h('div',{className:'eyebrow',style:{marginTop:8}},'Preferences'),
     h(SettingRow,{icon:'moon',label:'Dark mode',right:h(Toggle,{on:t.dark,onClick:()=>setTweak('dark',!t.dark)})}),
     h(SettingRow,{icon:'bolt',label:'Notifications',right:h(Toggle,{on:state.notif,onClick:()=>state.setNotif(!state.notif)})}),
@@ -473,5 +508,35 @@ function Settings({go, state, t, setTweak}){
   );
 }
 
-export const DriverScreens = {Home,SearchList,MapView,Filter,CarDetail,BookDates,Payment,Confirmed,FuelVerify,TripDone,DigitalKey,History,Likes,Profile,Settings};
+/* ---------------- SETTING DETAIL (one screen per setting) ---------------- */
+function SDField({label,defVal}){
+  return h('div',null,h('div',{className:'eyebrow',style:{marginBottom:6}},label),
+    h('div',{className:'searchbar',style:{background:'var(--surface)',border:'2px solid var(--hair)'}},h('input',{defaultValue:defVal||''})));
+}
+function SettingDetail({go, state, params}){
+  const k = (params && params.key) || 'profile';
+  const body = {
+    profile: ['Edit profile', [
+      h(SDField,{key:1,label:'Full name',defVal:'Justine Taylor'}),
+      h(SDField,{key:2,label:'Email',defVal:'justine@example.com'}),
+      h(SDField,{key:3,label:'Phone number',defVal:'+1 (234) 567-8910'})], 'Save changes'],
+    payment: ['Payment methods', [
+      h('div',{key:1,className:'card row between'},
+        h('div',{className:'row',style:{gap:12}},h(Icon,{name:'card',size:26,color:'var(--c-secondary)'}),
+          h('div',null,h('div',{style:{fontWeight:800}},'Visa •••• 4242'),h('div',{className:'t-muted',style:{fontSize:13,fontWeight:600}},'Expires 08/27'))),
+        h('span',{className:'badge ok'},'Default')),
+      h('button',{key:2,className:'btn btn-ghost btn-block'},h(Icon,{name:'plus',size:18}),'Add payment method')], null],
+    verification: ['Verification', [
+      h('div',{key:1,className:'card row between'},h('span',{className:'row',style:{gap:12,fontWeight:700}},h(Icon,{name:'shield',size:20,color:'var(--c-secondary)'}),'Identity'),h('span',{className:'badge ok'},'Verified')),
+      h('div',{key:2,className:'card row between'},h('span',{className:'row',style:{gap:12,fontWeight:700}},h(Icon,{name:'card',size:20,color:'var(--c-secondary)'}),'Driver’s license'),h('span',{className:'badge ok'},'Verified')),
+      h('div',{key:3,className:'card row between'},h('span',{className:'row',style:{gap:12,fontWeight:700}},h(Icon,{name:'shield',size:20,color:'var(--c-secondary)'}),'Insurance'),h('span',{className:'badge warn'},'Pending'))], null],
+  }[k] || ['Setting', [], null];
+  return h('div',{className:'screen-pad',style:{gap:16}},
+    h(Header,{title:body[0],onBack:()=>go(null,null,true)}),
+    ...body[1],
+    h('div',{className:'mt-auto'}),
+    body[2] && h('button',{className:'btn btn-primary btn-block',onClick:()=>go(null,null,true)},body[2]));
+}
+
+export const DriverScreens = {Home,SearchList,MapView,Filter,CarDetail,BookDates,Payment,Confirmed,FuelVerify,TripDone,NavScreen,DigitalKey,History,Likes,Profile,Settings,SettingDetail};
 export default DriverScreens;

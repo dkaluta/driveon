@@ -182,6 +182,9 @@ body{
   transition:background .15s, transform .15s;}
 .car-row:active{transform:scale(.985);background:var(--surface-2);}
 .car-row + .car-row{border-top:1px solid var(--hair);}
+/* separated card rows (renter home/search, owner lists) — no divider, clear gap, no accent line */
+.car-row.card-row{background:var(--surface-2);border:1px solid var(--hair);border-radius:16px;padding:12px 14px;}
+.car-row.card-row + .car-row.card-row{border-top:none;margin-top:12px;}
 .car-row .meta{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:9px;}
 .car-name{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.05;}
 .car-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto;}
@@ -460,6 +463,19 @@ body{
 .mt-auto{margin-top:auto;}
 .center-screen{flex:1;display:flex;flex-direction:column;justify-content:center;}
 
+/* ---- pinned action bar (floats above the glass tab bar, like Figma) ---- */
+/* Buttons stay visible above the tab bar; content scrolls behind a soft fade. */
+.pinned-actions{position:sticky;bottom:0;z-index:15;margin-top:auto;
+  display:flex;flex-direction:column;gap:10px;
+  margin-left:-20px;margin-right:-20px;padding:24px 20px 110px;
+  background:var(--bg);}
+/* soft top edge so content fades into the solid bar instead of cutting hard */
+.pinned-actions::before{content:"";position:absolute;left:0;right:0;bottom:100%;
+  height:26px;pointer-events:none;
+  background:linear-gradient(to top, var(--bg), transparent);}
+/* the bar provides its own bottom clearance; no extra screen padding */
+.screen-pad.has-pinned{padding-bottom:0;}
+
 /* ---- disabled button ---- */
 .btn.is-disabled{opacity:.5;pointer-events:none;box-shadow:none;filter:grayscale(.2);}
 
@@ -505,6 +521,9 @@ body{
 .cal-empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 0;
   color:var(--muted);text-align:center;}
 .cal-empty svg{color:var(--mint-strong);}
+/* availability day toggles (owner calendar booking windows) */
+.avday{flex:1 1 0;height:38px;border:none;cursor:pointer;border-radius:11px;background:var(--surface-2);color:var(--muted);font-weight:800;font-size:14px;}
+.avday.on{background:var(--grad-primary);color:#06302b;box-shadow:var(--glow);}
 
 /* uppercase toggle (Tweaks) */
 .no-upper .h-section,.no-upper .h-page,.no-upper .btn,.no-upper .badge,

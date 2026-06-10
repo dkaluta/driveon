@@ -131,6 +131,14 @@ export const DATA = {
       [],
     ],
   },
+  // ---- OWNER earnings breakdown (earnings screen) ----
+  ownerEarnings:{
+    total:1964, change:5.2, trips:23, avgTrip:85, bestMonth:'May',
+    months:[ ['Jan',640],['Feb',910],['Mar',1180],['Apr',1520],['May',1964] ],
+    byCar:[ {car:'outlander', amount:1290, trips:14}, {car:'cybertruck', amount:674, trips:9} ],
+  },
+  // ---- OWNER availability defaults (calendar booking windows) ----
+  ownerAvailability:{ days:[true,true,true,true,true,true,false], from:8, to:20 },
 };
 
 export default DATA;

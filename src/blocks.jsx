@@ -19,9 +19,8 @@ export function Lead({src,w=66,h:ht=52,r,avatar}){
 
 /* EntityRow — the universal list row. */
 export function EntityRow({lead, title, titleSize=19, sub=[], trailing, onClick, delay=0, accent}){
-  return h('div',{className:'car-row reveal',onClick,
-      style:Object.assign({animationDelay:delay+'ms'},
-        accent?{borderLeft:'3px solid var(--mint-strong)',paddingLeft:16,borderTop:'none'}:{})},
+  return h('div',{className:'car-row reveal'+(accent?' card-row':''),onClick,
+      style:{animationDelay:delay+'ms'}},
     lead && h(Lead,lead),
     h('div',{className:'meta'},
       h('div',{className:'car-name',style:{fontSize:titleSize}},title),

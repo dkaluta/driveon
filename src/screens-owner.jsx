@@ -35,8 +35,10 @@ function OwnerHome({go, state}){
         h('div',{className:'h-greet'},'Welcome back,',h('br'),h('b',null,o.name))),
       h('img',{src:o.avatar,alt:o.name,style:{width:62,height:62,borderRadius:18,objectFit:'cover',border:'2px solid hsl(var(--primary)/.3)'}})),
 
-    h('div',{className:'card',style:{background:'var(--grad-secondary)',color:'#fff',border:'none',boxShadow:'var(--teal-shadow)'}},
-      h('div',{className:'label',style:{opacity:.85,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',fontSize:12}},'Earnings this month'),
+    h('div',{className:'card card-interactive',style:{background:'var(--grad-secondary)',color:'#fff',border:'none',boxShadow:'var(--teal-shadow)',cursor:'pointer'},onClick:()=>go('owner-earnings')},
+      h('div',{className:'row between'},
+        h('div',{className:'label',style:{opacity:.85,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',fontSize:12}},'Earnings this month'),
+        h(Icon,{name:'chevron-right',size:20,color:'rgba(255,255,255,.85)'})),
       h('div',{className:'row',style:{alignItems:'flex-end',gap:12,marginTop:6}},
         h('div',{className:'counter',style:{fontSize:46,fontWeight:900,letterSpacing:'-.02em',lineHeight:1}},'$'+earn.toLocaleString()),
         h('div',{className:'row',style:{gap:4,background:'rgba(255,255,255,.22)',padding:'5px 10px',borderRadius:999,fontWeight:800,fontSize:14}},
@@ -60,11 +62,21 @@ function OwnerHome({go, state}){
 
 /* ---------------- OWNER CALENDAR (week view) ---------------- */
 const WEEK_DAYS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+const hrLabel = (n)=>String(n).padStart(2,'0')+':00';
+function WindowStepper({label,val,onChange}){
+  return h('div',{className:'card',style:{flex:1,padding:'10px 14px'}},
+    h('div',{className:'label',style:{color:'var(--muted)',fontSize:12,textTransform:'uppercase',letterSpacing:'.06em'}},label),
+    h('div',{className:'row between',style:{marginTop:6}},
+      h('button',{className:'iconbtn',style:{width:32,height:32},onClick:()=>onChange(val-1)},h(Icon,{name:'arrow-left',size:16})),
+      h('div',{style:{fontWeight:800,fontSize:18}},hrLabel(val)),
+      h('button',{className:'iconbtn',style:{width:32,height:32},onClick:()=>onChange(val+1)},h(Icon,{name:'arrow-right',size:16}))));
+}
 function OwnerCalendar({go, state, params}){
   const weeks = D.ownerWeeks;
   // params.week / params.sel seed fixed states for the static Figma export.
   const [offset,setOffset] = React.useState(params.week||0);
   const [sel,setSel] = React.useState(params.sel!=null?params.sel:0);
+  const [avail,setAvail] = React.useState(D.ownerAvailability);
   const week = weeks[String(offset)] || weeks['0'];
   const startNum = D.weekStart + offset*7;
   const dates = WEEK_DAYS.map((_,i)=>startNum+i);
@@ -98,7 +110,19 @@ function OwnerCalendar({go, state, params}){
               h('div',{style:{fontWeight:800,fontSize:17}},b.who),
               h('div',{className:'cal-when'},h(Icon,{name:'clock',size:14}),WEEK_DAYS[sel]+' | '+b.time)),
             h(Icon,{name:'chevron-right',size:22,color:'var(--c-accent)'})))
-    )
+    ),
+    // availability windows — when renters can book
+    h('div',{className:'card',style:{display:'flex',flexDirection:'column',gap:14}},
+      h('div',{className:'row between'},
+        h('span',{className:'eyebrow'},'Booking availability'),
+        h('span',{className:'t-muted',style:{fontSize:13,fontWeight:700}}, hrLabel(avail.from)+' — '+hrLabel(avail.to))),
+      h('div',{className:'weekstrip',style:{gap:6}},
+        WEEK_DAYS.map((d,i)=>h('button',{key:i,onClick:()=>setAvail(a=>({...a,days:a.days.map((v,j)=>j===i?!v:v)})),
+          className:'avday'+(avail.days[i]?' on':''),'aria-label':d},d[0]))),
+      h('div',{className:'row',style:{gap:12}},
+        h(WindowStepper,{label:'Open from',val:avail.from,onChange:v=>setAvail(a=>({...a,from:Math.max(0,Math.min(a.to-1,v))}))}),
+        h(WindowStepper,{label:'Open until',val:avail.to,onChange:v=>setAvail(a=>({...a,to:Math.max(a.from+1,Math.min(24,v))}))})),
+      h('p',{className:'t-muted',style:{margin:0,fontSize:13,fontWeight:600}},'Renters can only schedule rentals during these windows.'))
   );
 }
 
@@ -138,28 +162,85 @@ function OwnerGarage({go, state}){
   );
 }
 
-/* ---------------- OWNER ADD CAR ---------------- */
-function OwnerAddCar({go, state}){
-  const [sel,setSel] = React.useState(['auto']);
+/* ---------------- OWNER ADD / EDIT CAR ----------------
+   Mirrors the owner sign-up "Your car" registration fields exactly. */
+function CarTextField({label,defVal,ph}){
+  return h('div',null,h('div',{className:'eyebrow',style:{marginBottom:6}},label),
+    h('div',{className:'searchbar',style:{background:'var(--surface)',border:'2px solid var(--hair)'}},
+      h('input',{defaultValue:defVal||'',placeholder:ph})));
+}
+function CarStep({label,value,onChange}){
+  return h('div',{className:'card',style:{flex:1,padding:'10px 12px'}},
+    h('div',{className:'label',style:{color:'var(--muted)',fontSize:11,textTransform:'uppercase',letterSpacing:'.05em'}},label),
+    h('div',{className:'row between',style:{marginTop:6}},
+      h('button',{className:'iconbtn',style:{width:30,height:30},onClick:()=>onChange(Math.max(0,(value||0)-1))},h(Icon,{name:'arrow-left',size:15})),
+      h('div',{style:{fontWeight:800,fontSize:18}},value||0),
+      h('button',{className:'iconbtn',style:{width:30,height:30},onClick:()=>onChange((value||0)+1)},h(Icon,{name:'arrow-right',size:15}))));
+}
+function OwnerAddCar({go, state, params}){
+  const editId = params && params.edit;
+  const car = editId ? D.byId[editId] : null;
+  const oc = editId ? D.ownerCars.find(x=>x.car===editId) : null;
+  const [sel,setSel] = React.useState(car ? car.chips.map(c=>c[0]) : ['auto']);
+  const [steps,setSteps] = React.useState({doors:4, seats:car?car.seats:5, trunk:2});
   const allChips=[['auto','Auto'],['gear','Manual'],['bolt','EV'],['awd','AWD'],['leaf','ECO'],['glass','High-End']];
   const toggle=(k)=>setSel(s=>s.includes(k)?s.filter(x=>x!==k):[...s,k]);
-  const Field=({label,ph})=>h('div',null,h('div',{className:'eyebrow',style:{marginBottom:6}},label),
-    h('div',{className:'searchbar',style:{background:'var(--surface)',border:'2px solid var(--hair)'}},h('input',{placeholder:ph})));
+  const setStep=(k,v)=>setSteps(o=>({...o,[k]:v}));
+  const back=()=>go(editId?'car-detail':'owner-garage', editId?{id:editId}:null, !editId);
   return h('div',{className:'screen-pad',style:{gap:16}},
-    h(Header,{title:'List a car',onBack:()=>go('owner-garage',null,true)}),
-    h('div',{style:{aspectRatio:'16/9',borderRadius:24,border:'2px dashed var(--mint-strong)',background:'var(--mint)',
+    h(Header,{title:editId?'Edit car':'List a car',onBack:back}),
+    h('div',{style:{aspectRatio:'16/9',borderRadius:24,border:'2px dashed var(--mint-strong)',background:'var(--mint)',overflow:'hidden',position:'relative',
       display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8,color:'var(--c-secondary)',cursor:'pointer'}},
-      h(Icon,{name:'plus',size:36,stroke:2}),h('div',{className:'label',style:{fontWeight:700}},'Add photos')),
-    h(Field,{label:'Make & model',ph:'e.g. Toyota Corolla'}),
+      car && h('img',{src:car.img,alt:car.name,style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',opacity:.92}}),
+      h(Icon,{name:'camera',size:34,stroke:2,style:{position:'relative'}}),
+      h('div',{className:'label',style:{fontWeight:700,position:'relative'}},car?'Change photos':'Add photos')),
     h('div',{className:'row',style:{gap:12}},
-      h('div',{className:'grow'},h(Field,{label:'Year',ph:'2021'})),
-      h('div',{className:'grow'},h(Field,{label:'Price / hr',ph:'$12'}))),
+      h('div',{className:'grow'},h(CarTextField,{label:'Make',defVal:car&&car.name.split(' ')[0],ph:'Toyota'})),
+      h('div',{className:'grow'},h(CarTextField,{label:'Model',defVal:car&&car.name.split(' ').slice(1).join(' '),ph:'Corolla'}))),
+    h('div',{className:'row',style:{gap:12}},
+      h('div',{className:'grow'},h(CarTextField,{label:'Year',defVal:car&&String(car.year),ph:'2021'})),
+      h('div',{className:'grow'},h(CarTextField,{label:'License plate',defVal:oc&&oc.plate,ph:'123-45-678'}))),
+    h('div',{className:'row',style:{gap:10}},
+      h(CarStep,{label:'Doors',value:steps.doors,onChange:v=>setStep('doors',v)}),
+      h(CarStep,{label:'Seats',value:steps.seats,onChange:v=>setStep('seats',v)}),
+      h(CarStep,{label:'Trunk',value:steps.trunk,onChange:v=>setStep('trunk',v)})),
+    h('div',{className:'row',style:{gap:12}},
+      h('div',{className:'grow'},h(CarTextField,{label:'Price / hour ($)',defVal:car&&String(car.price),ph:'12'})),
+      h('div',{className:'grow'},h(CarTextField,{label:'Price / day ($)',defVal:car&&String(car.price*10),ph:'120'}))),
+    h(CarTextField,{label:'Mileage (km)',defVal:car&&car.mileage,ph:'80,000'}),
     h('div',null,h('div',{className:'eyebrow',style:{marginBottom:8}},'Features'),
       h('div',{className:'chips'},allChips.map(([ic,label])=>h('button',{key:ic,onClick:()=>toggle(ic),
         className:'chip',style:{border:'none',cursor:'pointer',background:sel.includes(ic)?'var(--c-brand)':'var(--mint)',color:sel.includes(ic)?'#fff':'var(--c-accent)'}},
         h(Icon,{name:ic,size:15,stroke:2.2}),label)))),
     h('div',{className:'mt-auto'}),
-    h('button',{className:'btn btn-primary btn-block',onClick:()=>go('owner-garage',null,true)},'Publish listing')
+    h('button',{className:'btn btn-primary btn-block',onClick:back},editId?'Save changes':'Publish listing')
+  );
+}
+
+/* ---------------- OWNER EARNINGS ---------------- */
+function OwnerEarnings({go, state}){
+  const e = D.ownerEarnings;
+  const max = Math.max(...e.months.map(m=>m[1]));
+  return h('div',{className:'screen-pad',style:{gap:18}},
+    h(Header,{title:'Earnings',onBack:()=>go(null,null,true)}),
+    h('div',{className:'card',style:{background:'var(--grad-secondary)',color:'#fff',border:'none',boxShadow:'var(--teal-shadow)'}},
+      h('div',{className:'label',style:{opacity:.85,fontWeight:700,letterSpacing:'.06em',textTransform:'uppercase',fontSize:12}},'Total this month'),
+      h('div',{className:'row',style:{alignItems:'flex-end',gap:12,marginTop:6}},
+        h('div',{className:'counter',style:{fontSize:44,fontWeight:900,letterSpacing:'-.02em',lineHeight:1}},'$'+e.total.toLocaleString()),
+        h('div',{className:'row',style:{gap:4,background:'rgba(255,255,255,.22)',padding:'5px 10px',borderRadius:999,fontWeight:800,fontSize:14}},
+          h(Icon,{name:'trend-up',size:16,stroke:2.6}),e.change+'%'))),
+    h('div',{className:'card'},
+      h('div',{className:'eyebrow',style:{marginBottom:16}},'Last 5 months'),
+      h('div',{className:'row',style:{alignItems:'flex-end',gap:10,height:140}},
+        e.months.map(([m,v],i)=>h('div',{key:i,style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:8,justifyContent:'flex-end',height:'100%'}},
+          h('div',{style:{fontWeight:800,fontSize:12,color:'var(--c-secondary)'}},'$'+(v/1000).toFixed(1)+'k'),
+          h('div',{style:{width:'100%',maxWidth:32,height:Math.round(v/max*96)+'px',borderRadius:8,background:i===e.months.length-1?'var(--grad-primary)':'var(--mint-strong)'}}),
+          h('div',{className:'label',style:{fontSize:11,color:'var(--muted)',fontWeight:700}},m))))),
+    h(StatTiles,{tiles:[{value:e.trips,label:'Trips'},{value:'$'+e.avgTrip,label:'Avg / trip'},{value:e.bestMonth,label:'Best month'}]}),
+    h(SectionCard,{title:'By car'},
+      e.byCar.map((bc,i)=>{const c=D.byId[bc.car];return h(EntityRow,{key:i,accent:true,delay:i*70,lead:{src:c.img,w:60,h:48,r:14},title:c.name,titleSize:18,
+        sub:[h('div',{key:'t',className:'t-muted',style:{fontWeight:700,fontSize:13}},bc.trips+' trips')],
+        trailing:[h('div',{key:'p',className:'price'},'$'+bc.amount)]});}))
   );
 }
 
@@ -176,5 +257,5 @@ function OwnerProfile({go, state}){
   );
 }
 
-export const OwnerScreens = {OwnerHome,OwnerCalendar,OwnerHistory,OwnerGarage,OwnerAddCar,OwnerProfile};
+export const OwnerScreens = {OwnerHome,OwnerCalendar,OwnerHistory,OwnerGarage,OwnerAddCar,OwnerEarnings,OwnerProfile};
 export default OwnerScreens;

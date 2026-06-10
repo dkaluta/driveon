@@ -51,7 +51,7 @@ figma.connect(Chips, 'https://www.figma.com/design/hCgqlk4CL9NDwY2LSiBjvs/Untitl
   example: (props) => <Chips items={props.type} />,
 });
 
-// ---- Stars (variant `Value` 0–5) ----
+// ---- Stars (variant `Value` 0--5) ----
 figma.connect(Stars, 'https://www.figma.com/design/hCgqlk4CL9NDwY2LSiBjvs/Untitled?node-id=12-109', {
   props: {
     value: figma.enum('Value', { '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 }),

@@ -64,6 +64,9 @@ body{display:block;overflow:auto;background:var(--bg);}
 .ga-frame .tabbar{position:relative;left:auto;right:auto;bottom:auto;
   width:auto;margin:8px 16px 22px;}
 
+/* pinned CTA flows in-document for export (no sticky/fade) — sits at content bottom */
+.ga-frame .pinned-actions{position:static;margin:auto 0 0;padding:12px 0 0;background:none;}
+
 /* combined gallery: label strip above each centered device frame */
 .ga-cell{display:flex;flex-direction:column;align-items:center;}
 .ga-label{align-self:stretch;font:600 13px/1 var(--font-label);letter-spacing:.1em;
