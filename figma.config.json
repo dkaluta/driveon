@@ -2,6 +2,6 @@
   "codeConnect": {
     "parser": "react",
     "include": ["src/**/*.jsx"],
-    "label": "GETAWAY"
+    "label": "DriveOn"
   }
 }

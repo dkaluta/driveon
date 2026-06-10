@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "GETAWAY — car-sharing app. Driver + owner flows. Implemented from the Claude Design handoff bundle.",
+  "description": "DriveOn — peer-to-peer car-sharing app. Driver + owner flows. Designed in Figma and vibe-coded with Claude.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
