@@ -74,5 +74,19 @@ export function SectionCard({title,action,onAction,children}){
     h('div',{className:'card',style:{padding:'4px 16px'}},children));
 }
 
-export const Blocks = {DateLine,Lead,EntityRow,ProfileHeader,StatTiles,Toggle,SettingRow,NavCard,SectionCard};
+/* Review — one car review: avatar + name + star rating + date + a few words. */
+export function Review({avatar,who,stars=5,date,text,delay=0}){
+  return h('div',{className:'review reveal',style:{animationDelay:delay+'ms'}},
+    h('div',{className:'row',style:{gap:10,alignItems:'center'}},
+      h('img',{src:avatar,alt:who,style:{width:38,height:38,borderRadius:12,objectFit:'cover',flex:'0 0 auto'}}),
+      h('div',{className:'grow'},
+        h('div',{style:{fontWeight:800,fontSize:15}},who),
+        h('div',{className:'t-muted',style:{fontSize:12,fontWeight:600}},date)),
+      h('div',{className:'row',style:{gap:2}},
+        [1,2,3,4,5].map(n=>h(Icon,{key:n,name:'star',size:14,fill:n<=stars,
+          color:n<=stars?'var(--star)':'var(--hair)'})))),
+    h('p',{className:'review-text'},text));
+}
+
+export const Blocks = {DateLine,Lead,EntityRow,ProfileHeader,StatTiles,Toggle,SettingRow,NavCard,SectionCard,Review};
 export default Blocks;

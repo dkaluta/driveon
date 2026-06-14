@@ -7,6 +7,13 @@ const h = React.createElement;
 // Re-export so screens can pull every shared primitive from a single module.
 export { Icon };
 
+/* Open a personal WhatsApp chat (mockup — opens wa.me with a prefilled message). */
+export function messageOnWhatsApp(name){
+  const txt = 'Hi'+(name?' '+String(name).split(' ')[0]:'')+', about the DriveOn rental…';
+  const url = 'https://wa.me/?text='+encodeURIComponent(txt);
+  if (typeof window !== 'undefined') window.open(url, '_blank', 'noopener');
+}
+
 /* ---- Logo: DriveOn G-scooter mark (matches Figma app icon) ----
    variant 'badge' = gradient rounded-square + white mark (app-icon style).  */
 export function LogoG({size=112, variant='badge', tint}){

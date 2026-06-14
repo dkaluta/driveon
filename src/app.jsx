@@ -25,7 +25,9 @@ const SCREENS = {
   'fuel-return': {comp:Driver.FuelVerify,   chrome:false,                tr:'up'},
   'trip-done':   {comp:Driver.TripDone,     chrome:false,                tr:'fade'},
   navigate:      {comp:Driver.NavScreen,    chrome:false,                tr:'fwd'},
+  'key-early':   {comp:Driver.KeyEarly,     chrome:false,                tr:'up'},
   'digital-key': {comp:Driver.DigitalKey,   chrome:false,                tr:'up'},
+  'rate-ride':   {comp:Driver.RateRide,     chrome:false,                tr:'up'},
   history:       {comp:Driver.History,     mode:'driver', key:'history',tr:'fade'},
   likes:         {comp:Driver.Likes,       mode:'driver', key:'likes',  tr:'fade'},
   profile:       {comp:Driver.Profile,     mode:'driver', key:'profile',tr:'fade'},
@@ -37,6 +39,8 @@ const SCREENS = {
   'owner-history': {comp:Owner.OwnerHistory, mode:'owner', key:'history',tr:'fade'},
   'owner-garage':  {comp:Owner.OwnerGarage,  mode:'owner', key:'garage', tr:'fade'},
   'owner-add-car': {comp:Owner.OwnerAddCar,  chrome:false,              tr:'up'},
+  'owner-return':  {comp:Owner.OwnerReturn,  chrome:false,              tr:'fwd'},
+  'owner-renter':  {comp:Owner.OwnerRenter,  chrome:false,              tr:'fwd'},
   'owner-profile': {comp:Owner.OwnerProfile, mode:'owner', key:'profile',tr:'fade'},
 };
 const RESET = new Set(['splash','home','owner-home','signup','login']);

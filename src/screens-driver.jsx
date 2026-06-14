@@ -1,7 +1,7 @@
 /* DriveOn — driver flow screens. */
 import React from 'react';
-import { Icon, Stars, Chips, CarPhoto, Badge, Heart, Header } from './ui.jsx';
-import { DateLine, EntityRow, ProfileHeader, StatTiles, Toggle, SettingRow, NavCard, SectionCard } from './blocks.jsx';
+import { Icon, Stars, Chips, CarPhoto, Badge, Heart, Header, messageOnWhatsApp } from './ui.jsx';
+import { DateLine, EntityRow, ProfileHeader, StatTiles, Toggle, SettingRow, NavCard, SectionCard, Review } from './blocks.jsx';
 import { DATA as D } from './data.js';
 
 const h = React.createElement;
@@ -52,6 +52,7 @@ function Home({go, state}){
     h(SectionCard,{title:'Rate Your Rides'},
       rate.map((b,i)=>{const c=D.byId[b.car];const val=state.ratings[c.id]||b.stars;
         return h(EntityRow,{key:i,accent:true,delay:i*70,lead:{src:c.img,w:60,h:48,r:14},title:c.name,titleSize:18,
+          onClick:()=>go('rate-ride',{id:c.id}),
           sub:[h(DateLine,{key:'d',date:b.date})],
           trailing:[h('div',{key:'p',className:'price'},'$'+b.total),h(Stars,{key:'s',value:val,size:18,onRate:(n)=>state.rate(c.id,n)})]});}))
   );
@@ -164,6 +165,21 @@ function navigateToVehicle(car){
   if(typeof window!=='undefined') window.open(url,'_blank','noopener');
 }
 
+/* Reviews block — what other drivers said (shared by driver + owner car views). */
+function ReviewsSection({car}){
+  return h('div',null,
+    h('hr',{className:'hr'}),
+    h('div',{className:'row between',style:{margin:'8px 0 10px'}},
+      h('div',{className:'h-section'},'Reviews'),
+      h('div',{className:'row',style:{gap:6}},
+        h(Icon,{name:'star',size:18,fill:true,color:'var(--star)'}),
+        h('b',null,car.rating),
+        h('span',{className:'t-muted',style:{fontSize:13,fontWeight:600}},'· '+car.reviews+' reviews'))),
+    h('div',{style:{display:'flex',flexDirection:'column',gap:10}},
+      D.reviews.map((r,i)=>h(Review,{key:i,delay:i*60,
+        avatar:r.avatar,who:r.who,stars:r.stars,date:r.date,text:r.text}))));
+}
+
 function CarDetail({go, state, params}){
   const car = D.byId[params.id] || D.cars[0];
   const owned = state.ownedIds.has(car.id);
@@ -203,6 +219,7 @@ function CarDetail({go, state, params}){
             h('div',{className:'row between'},h('span',{className:'eyebrow'},'Your listing'),h(Badge,{status:oc.status})),
             h('div',{className:'kv'},h('span',{className:'k'},'Licence plate'),h('span',{className:'v'},oc.plate)),
             h('div',{className:'kv'},h('span',{className:'k'},'Total earned'),h('span',{className:'v',style:{color:'var(--c-secondary)'}},'$'+oc.earned))),
+          h(ReviewsSection,{car}),
           h('div',{className:'pinned-actions'},
             h('div',{className:'row',style:{gap:10}},
               h('button',{className:'btn btn-ghost grow',onClick:()=>go('owner-add-car',{edit:car.id})},h(Icon,{name:'pencil',size:19}),'Edit'),
@@ -216,19 +233,20 @@ function CarDetail({go, state, params}){
               h('div',{className:'t-muted',style:{fontWeight:600,fontSize:14}},car.owner.resp+'% response rate')),
             car.owner.verified && h('span',{className:'badge ok',style:{display:'inline-flex',alignItems:'center',gap:5}},
               h(Icon,{name:'shield',size:15}),'Verified')),
+          h(ReviewsSection,{car}),
           reserved
             // ---- RESERVED: navigate (Google Maps transit) + open key ----
             ? h('div',{className:'pinned-actions'},
                 h('button',{className:'btn btn-primary btn-block',onClick:()=>navigateToVehicle(car)},
                   h(Icon,{name:'navigation',size:20}),'Navigate to Vehicle'),
                 h('div',{className:'row',style:{gap:10}},
-                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'}},h(Icon,{name:'phone',size:20})),
-                  h('button',{className:'btn btn-ghost grow',onClick:()=>go('fuel-pickup',{id:car.id,phase:'pickup'})},
+                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'message owner'},h(Icon,{name:'chat',size:20})),
+                  h('button',{className:'btn btn-ghost grow',onClick:()=>go('key-early',{id:car.id})},
                     h(Icon,{name:'key',size:19}),'Open digital key')))
             // ---- NOT RESERVED: book ----
             : h('div',{className:'pinned-actions'},
                 h('div',{className:'row',style:{gap:10}},
-                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'}},h(Icon,{name:'phone',size:20})),
+                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'message owner'},h(Icon,{name:'chat',size:20})),
                   h('button',{className:'btn btn-primary grow',onClick:()=>{state.startBooking(car.id);go('book-dates',{id:car.id});}},'Book this car'))))
   );
 }
@@ -317,8 +335,8 @@ function Confirmed({go, params}){
 }
 
 /* ---------------- FUEL VERIFICATION (pickup + return) ---------------- */
-/* Dashboard-style fuel gauge, needle at Full. */
-function FuelGauge(){
+/* Dashboard-style fuel gauge, needle at Full. (shared with owner car-return) */
+export function FuelGauge(){
   // true semicircle: center (100,100), radius 80, endpoints level at y=100
   return h('svg',{viewBox:'0 0 200 120',width:'100%',style:{maxWidth:230,display:'block',margin:'0 auto'}},
     h('path',{d:'M20 100 A80 80 0 0 1 180 100',fill:'none',stroke:'var(--hair)',strokeWidth:14,strokeLinecap:'round'}),
@@ -538,5 +556,47 @@ function SettingDetail({go, state, params}){
     body[2] && h('button',{className:'btn btn-primary btn-block',onClick:()=>go(null,null,true)},body[2]));
 }
 
-export const DriverScreens = {Home,SearchList,MapView,Filter,CarDetail,BookDates,Payment,Confirmed,FuelVerify,TripDone,NavScreen,DigitalKey,History,Likes,Profile,Settings,SettingDetail};
+/* ---------------- RATE YOUR RIDE (stars + a few words) ---------------- */
+function RateRide({go, state, params}){
+  const car = D.byId[params.id] || D.cars[0];
+  const [stars,setStars] = React.useState(state.ratings[car.id]||0);
+  const [text,setText] = React.useState('');
+  return h('div',{className:'screen-pad',style:{gap:18}},
+    h(Header,{title:'Rate your ride',onBack:()=>go(null,null,true)}),
+    h('div',{className:'card',style:{display:'flex',gap:13,alignItems:'center'}},
+      h(CarPhoto,{src:car.img,alt:car.name,w:64,h:50}),
+      h('div',{className:'grow'},h('div',{className:'car-name',style:{fontSize:18}},car.name),
+        h('div',{className:'t-muted',style:{fontWeight:700,fontSize:13,marginTop:4}},car.loc))),
+    h('div',null,
+      h('div',{className:'eyebrow',style:{marginBottom:10}},'Your rating'),
+      h('div',{className:'rate-stars'},
+        [1,2,3,4,5].map(n=>h('button',{key:n,className:'rate-star'+(n<=stars?' on':''),
+          onClick:()=>setStars(n),'aria-label':n+' stars'},h(Icon,{name:'star',size:40,fill:n<=stars}))))),
+    h('div',null,
+      h('div',{className:'eyebrow',style:{marginBottom:8}},'Your review'),
+      h('textarea',{className:'review-input',placeholder:'Share a few words about your trip…',
+        value:text,onChange:e=>setText(e.target.value)})),
+    h('div',{className:'mt-auto'}),
+    h('button',{className:'btn btn-primary btn-block'+(stars?'':' is-disabled'),disabled:!stars,
+      onClick:()=>{state.rate(car.id,stars);go('home');}},'Submit review')
+  );
+}
+
+/* ---------------- DIGITAL KEY — too early (unlocks ~5 min before) ---------------- */
+function KeyEarly({go, state, params}){
+  const car = params.id ? D.byId[params.id] : null;
+  return h('div',{className:'screen-pad',style:{gap:16}},
+    h(Header,{title:'Digital key',onBack:()=>go(null,null,true)}),
+    h('div',{className:'center-screen',style:{gap:18,alignItems:'center',textAlign:'center'}},
+      h('div',{className:'key-wait-ring'},h(Icon,{name:'lock',size:54})),
+      h('h2',{className:'h-page',style:{margin:0}},'Almost time'),
+      h('p',{className:'t-muted',style:{fontWeight:600,lineHeight:1.5,maxWidth:300,margin:0}},
+        'Your digital key unlocks about 5 minutes before your rental starts'+(car?' — the '+car.name+' will be ready then.':'.')),
+      h('div',{className:'key-wait-chip'},h(Icon,{name:'clock',size:18}),'Unlocks ~5 min before pickup')),
+    h('button',{className:'btn btn-primary btn-block',onClick:()=>go('fuel-pickup',{id:params.id,phase:'pickup'})},
+      h(Icon,{name:'key',size:20}),'I’m here — continue')
+  );
+}
+
+export const DriverScreens = {Home,SearchList,MapView,Filter,CarDetail,BookDates,Payment,Confirmed,FuelVerify,TripDone,NavScreen,DigitalKey,History,Likes,Profile,Settings,SettingDetail,RateRide,KeyEarly};
 export default DriverScreens;

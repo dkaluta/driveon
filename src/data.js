@@ -81,6 +81,12 @@ export const DATA = {
     { car:'mazda-2',    total:74,  date:'16/10/2025', time:'8 – 12',  status:'rejected' },
     { car:'seat-ibiza', total:37,  date:'10/03/2026', time:'18 – 22', status:'confirmed', stars:0 },
   ],
+  // ---- DRIVER car reviews (shown on car detail) ----
+  reviews:[
+    { who:'Maya Gold',  avatar:A('avatar-tamar.jpg'), stars:5, date:'2 weeks ago',  text:'Spotless car and the digital-key pickup was effortless. Tank was full, exactly as described. Would book again!' },
+    { who:'Idan Bar',   avatar:A('avatar-user.jpg'),  stars:4, date:'1 month ago',  text:'Great ride for the price. Owner was quick to respond and pickup was smooth.' },
+    { who:'Noa Levi',   avatar:A('avatar-dana.jpg'),  stars:5, date:'2 months ago', text:'Super clean, drove perfectly. The whole trip from unlock to return just worked.' },
+  ],
   // ---- OWNER side ----
   owner:{ name:'Dana', earnings:1964, change:5.2, rating:3.6, reviews:47, rentals:47, listed:2, since:'3y',
           verified:true, avatar:A('avatar-dana.jpg') },
@@ -137,8 +143,22 @@ export const DATA = {
     months:[ ['Jan',640],['Feb',910],['Mar',1180],['Apr',1520],['May',1964] ],
     byCar:[ {car:'outlander', amount:1290, trips:14}, {car:'cybertruck', amount:674, trips:9} ],
   },
-  // ---- OWNER availability defaults (calendar booking windows) ----
-  ownerAvailability:{ days:[true,true,true,true,true,true,false], from:8, to:20 },
+  // ---- OWNER availability — PER-DAY booking windows (each day its own hours) ----
+  // index 0=SUN … 6=SAT. on=false means the car isn't bookable that day.
+  ownerAvailability:{ days:[
+    { on:false, from:9,  to:18 },   // SUN
+    { on:true,  from:8,  to:20 },   // MON
+    { on:true,  from:8,  to:20 },   // TUE
+    { on:true,  from:7,  to:19 },   // WED
+    { on:true,  from:8,  to:22 },   // THU
+    { on:true,  from:9,  to:14 },   // FRI
+    { on:false, from:10, to:16 },   // SAT
+  ] },
+  // ---- OWNER car-return notifications (driver brought the car back) ----
+  returns:[
+    { who:'Mike Jakson', avatar:A('avatar-avi.jpg'), car:'cybertruck', when:'Today · 17:45',
+      loc:'Tel Aviv · Port', sameSpot:true, fuel:'full', distance:'182 km', amount:64 },
+  ],
 };
 
 export default DATA;
