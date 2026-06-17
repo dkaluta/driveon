@@ -332,8 +332,8 @@ function OwnerRenter({go, state, params}){
       kv('Time', r.time||'—'),
       kv('Earnings','$'+(r.amount||0),true)),
     h('div',{className:'mt-auto'}),
-    h('button',{className:'btn btn-primary btn-block',onClick:()=>messageOnWhatsApp(r.who)},
-      h(Icon,{name:'chat',size:20}),'Message '+(r.who?r.who.split(' ')[0]:'renter'))
+    h('button',{className:'btn btn-whatsapp btn-block',onClick:()=>messageOnWhatsApp(r.who)},
+      h(Icon,{name:'whatsapp',size:20}),'Message '+(r.who?r.who.split(' ')[0]:'renter'))
   );
 }
 

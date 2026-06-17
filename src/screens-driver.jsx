@@ -43,10 +43,7 @@ function Home({go, state}){
         sub:[h(DateLine,{key:'d',date:b.date,time:b.time})],
         trailing:[h('div',{key:'p',className:'price'},'$'+b.total),
           active
-            ? h('div',{key:'a',className:'row',style:{gap:6}},
-                h('button',{className:'iconbtn',style:{width:36,height:36,background:'var(--grad-primary)',color:'#06302b'},
-                  onClick:e=>{e.stopPropagation();go('navigate',{id:c.id});},'aria-label':'navigate to car'},h(Icon,{name:'navigation',size:18})),
-                h('span',{className:'badge ok',style:{display:'inline-flex',alignItems:'center',gap:4}},h(Icon,{name:'key',size:12}),'Key'))
+            ? h('span',{key:'a',className:'badge ok',style:{display:'inline-flex',alignItems:'center',gap:4}},h(Icon,{name:'key',size:12}),'Key')
             : h(Badge,{status:b.status})]});})),
 
     h(SectionCard,{title:'Rate Your Rides'},
@@ -240,13 +237,13 @@ function CarDetail({go, state, params}){
                 h('button',{className:'btn btn-primary btn-block',onClick:()=>navigateToVehicle(car)},
                   h(Icon,{name:'navigation',size:20}),'Navigate to Vehicle'),
                 h('div',{className:'row',style:{gap:10}},
-                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'message owner'},h(Icon,{name:'chat',size:20})),
+                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'call owner'},h(Icon,{name:'phone',size:20})),
                   h('button',{className:'btn btn-ghost grow',onClick:()=>go('key-early',{id:car.id})},
                     h(Icon,{name:'key',size:19}),'Open digital key')))
             // ---- NOT RESERVED: book ----
             : h('div',{className:'pinned-actions'},
                 h('div',{className:'row',style:{gap:10}},
-                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'message owner'},h(Icon,{name:'chat',size:20})),
+                  h('button',{className:'btn btn-ghost',style:{flex:'0 0 auto',padding:'15px 18px'},onClick:()=>messageOnWhatsApp(car.owner.name),'aria-label':'call owner'},h(Icon,{name:'phone',size:20})),
                   h('button',{className:'btn btn-primary grow',onClick:()=>{state.startBooking(car.id);go('book-dates',{id:car.id});}},'Book this car'))))
   );
 }

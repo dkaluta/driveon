@@ -185,6 +185,9 @@ body{
 /* separated card rows (renter home/search, owner lists) — no divider, clear gap, no accent line */
 .car-row.card-row{background:var(--surface-2);border:1px solid var(--hair);border-radius:16px;padding:12px 14px;}
 .car-row.card-row + .car-row.card-row{border-top:none;margin-top:12px;}
+/* rows that live INSIDE a SectionCard share that one card — plain rows, no nested frame (matches Figma) */
+.card > .car-row.card-row{background:none;border:none;border-radius:14px;padding:12px 4px;}
+.card > .car-row.card-row + .car-row.card-row{margin-top:0;border-top:none;}
 .car-row .meta{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:9px;}
 .car-name{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.05;}
 .car-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto;}
@@ -231,6 +234,9 @@ body{
 .btn-deep{background:var(--c-brand);color:#fff;box-shadow:var(--teal-shadow);}
 .btn-ghost{background:var(--mint);color:var(--c-brand);}
 .dark .btn-ghost{color:var(--c-primary);}
+/* WhatsApp-branded message button */
+.btn-whatsapp{background:#25D366;color:#fff;box-shadow:0 10px 24px -10px rgba(37,211,102,.7);}
+.btn-whatsapp:hover{filter:brightness(1.04);}
 .btn-block{width:100%;}
 
 .tlink{color:var(--c-primary);font-weight:700;cursor:pointer;}

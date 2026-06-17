@@ -55,8 +55,8 @@ function Splash({go, state}){
       h(Wordmark,{height:58,color:'#fff',className:'splash-wm'}),
       h('div',{className:'tag'},'Your next adventure is parked nearby'),
       h('div',{className:'choose'},
-        h('button',{className:'btn btn-primary',style:{minWidth:260},onClick:()=>go('signup',{role:'driver'})},h(Icon,{name:'key',size:20}),'I want to drive'),
-        h('button',{className:'btn btn-deep',style:{minWidth:260,background:'rgba(255,255,255,.16)',backdropFilter:'blur(6px)'},onClick:()=>go('signup',{role:'owner'})},h(Icon,{name:'car',size:20}),'I want to rent out my car'),
+        h('button',{className:'btn btn-primary',style:{minWidth:260},onClick:()=>go('signup',{role:'driver'})},'I want to drive'),
+        h('button',{className:'btn btn-deep',style:{minWidth:260,background:'rgba(255,255,255,.16)',backdropFilter:'blur(6px)'},onClick:()=>go('signup',{role:'owner'})},'I want to rent out my car'),
         h('div',{style:{marginTop:4}},
           h('span',{style:{color:'hsl(173 40% 88%)',fontSize:15}},'Already have an account? '),
           h('span',{style:{color:'#fff',fontWeight:800,fontSize:15,cursor:'pointer'},onClick:()=>go('login',{role:'driver'})},'Log in')))));
